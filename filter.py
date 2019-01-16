@@ -1,7 +1,10 @@
 import os
 
 from collections import Counter
-
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split as tts
+from sklearn.metrics import accuracy_score
+from numpy import save
 
 def make_dict():
     direc = "email/"
@@ -58,4 +61,14 @@ def make_dataset(dict):
 d = make_dict()
 features, labels = make_dataset(d)
 
-print (len(features), len(labels))
+
+x_train, x_test, y_train, y_test = tts(features, labels, test_size=0.2)
+
+clf = MultinomialNB()
+clf.fit(x_train, y_train)
+
+preds = clf.predict(x_test)
+
+print (accuracy_score(y_test, preds))
+
+save(clf, "text-classifier.mdl")
